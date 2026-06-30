@@ -2,13 +2,10 @@
 
 ## Project Overview
 
-**Project Title**: Library Management System  
-**Level**: Intermediate  
-**Database**: `library_db`
+**Project Title**: Library Management System    
 
 This project demonstrates the implementation of a Library Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
 
-![Library_project](https://github.com/najirh/Library-System-Management---P2/blob/main/library.jpg)
 
 ## Objectives
 
@@ -20,92 +17,115 @@ This project demonstrates the implementation of a Library Management System usin
 ## Project Structure
 
 ### 1. Database Setup
-![ERD](https://github.com/najirh/Library-System-Management---P2/blob/main/library_erd.png)
 
-- **Database Creation**: Created a database named `library_db`.
+- **Database Creation**: 
 - **Table Creation**: Created tables for branches, employees, members, books, issued status, and return status. Each table includes relevant columns and relationships.
 
 ```sql
-CREATE DATABASE library_db;
+
+--- Libary Management System Project
+
+--- Create Branch Table
 
 DROP TABLE IF EXISTS branch;
-CREATE TABLE branch
+CREATE TABLE branch 
 (
-            branch_id VARCHAR(10) PRIMARY KEY,
-            manager_id VARCHAR(10),
-            branch_address VARCHAR(30),
-            contact_no VARCHAR(15)
+             branch_id VARCHAR(10) PRIMARY KEY,
+			 manager_id VARCHAR(10),
+			 branch_address VARCHAR(10),
+			 contact_no VARCHAR(55)
 );
 
 
--- Create table "Employee"
+ALTER TABLE branch
+ALTER COLUMN branch_address TYPE VARCHAR(55);
+
 DROP TABLE IF EXISTS employees;
-CREATE TABLE employees
-(
-            emp_id VARCHAR(10) PRIMARY KEY,
-            emp_name VARCHAR(30),
-            position VARCHAR(30),
-            salary DECIMAL(10,2),
-            branch_id VARCHAR(10),
-            FOREIGN KEY (branch_id) REFERENCES  branch(branch_id)
+CREATE TABLE employees 
+(           
+             emp_id VARCHAR(15) PRIMARY KEY,
+             emp_name VARCHAR(25),	
+			 position VARCHAR(25),	
+			 salary INT,	
+			 branch_id VARCHAR(15)
 );
 
 
--- Create table "Members"
-DROP TABLE IF EXISTS members;
-CREATE TABLE members
-(
-            member_id VARCHAR(10) PRIMARY KEY,
-            member_name VARCHAR(30),
-            member_address VARCHAR(30),
-            reg_date DATE
-);
-
-
-
--- Create table "Books"
 DROP TABLE IF EXISTS books;
 CREATE TABLE books
-(
-            isbn VARCHAR(50) PRIMARY KEY,
-            book_title VARCHAR(80),
-            category VARCHAR(30),
-            rental_price DECIMAL(10,2),
-            status VARCHAR(10),
-            author VARCHAR(30),
-            publisher VARCHAR(30)
+(            
+             isbn VARCHAR(25) PRIMARY KEY,
+			 book_title VARCHAR(75),
+			 category VARCHAR(15),
+			 rental_price FLOAT,	
+			 status VARCHAR(20),	
+			 author VARCHAR(35),
+			 publisher VARCHAR(55)
 );
+ALTER TABLE books
+ALTER COLUMN category TYPE VARCHAR(25);
 
+DROP TABLE IF EXISTS members;
+CREATE TABLE members
+       (
+	    member_id VARCHAR(15) PRIMARY KEY,	
+		member_name VARCHAR(25),	
+		member_address VARCHAR(25),	
+		reg_date DATE
+       );
 
-
--- Create table "IssueStatus"
-DROP TABLE IF EXISTS issued_status;
-CREATE TABLE issued_status
-(
-            issued_id VARCHAR(10) PRIMARY KEY,
-            issued_member_id VARCHAR(30),
-            issued_book_name VARCHAR(80),
-            issued_date DATE,
-            issued_book_isbn VARCHAR(50),
-            issued_emp_id VARCHAR(10),
-            FOREIGN KEY (issued_member_id) REFERENCES members(member_id),
-            FOREIGN KEY (issued_emp_id) REFERENCES employees(emp_id),
-            FOREIGN KEY (issued_book_isbn) REFERENCES books(isbn) 
-);
-
-
-
--- Create table "ReturnStatus"
 DROP TABLE IF EXISTS return_status;
 CREATE TABLE return_status
-(
-            return_id VARCHAR(10) PRIMARY KEY,
-            issued_id VARCHAR(30),
-            return_book_name VARCHAR(80),
-            return_date DATE,
-            return_book_isbn VARCHAR(50),
-            FOREIGN KEY (return_book_isbn) REFERENCES books(isbn)
-);
+       (
+        return_id VARCHAR(10) PRIMARY KEY,	
+		issued_id VARCHAR(15),	
+		return_book_name VARCHAR(75),	
+		return_date DATE,
+		return_book_isbn VARCHAR(25)
+
+	   );
+
+DROP TABLE IF EXISTS issued_status;
+CREATE TABLE issued_status
+       (
+        issued_id VARCHAR(15) PRIMARY KEY,	
+		issued_member_id VARCHAR(15),	
+		issued_book_name VARCHAR(75),	
+		issued_date DATE,	
+		issued_book_isbn VARCHAR(25),	
+		issued_emp_id VARCHAR(15)
+	  
+       );
+	   
+   
+
+-- FOREIGN KEY
+ALTER TABLE issued_status
+ADD CONSTRAINT fk_member
+FOREIGN KEY (issued_member_id)
+REFERENCES members(member_id);
+
+ALTER TABLE issued_status
+ADD CONSTRAINT fk_books
+FOREIGN KEY (issued_book_isbn)
+REFERENCES books(isbn);
+
+ALTER TABLE issued_status
+ADD CONSTRAINT fk_employees
+FOREIGN KEY (issued_emp_id)
+REFERENCES employees(emp_id);
+
+
+ALTER TABLE employees
+ADD CONSTRAINT fk_branch
+FOREIGN KEY (branch_id)
+REFERENCES branch(branch_id);
+
+ALTER TABLE return_status
+ADD CONSTRAINT fk_issued_status
+FOREIGN KEY (issued_id)
+REFERENCES issued_status(issued_id);
+
 
 ```
 
@@ -117,11 +137,11 @@ CREATE TABLE return_status
 - **Delete**: Removed records from the `members` table as needed.
 
 **Task 1. Create a New Book Record**
--- "978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.')"
+-- "978-0-06251-567-4', 'The Monk Who Sold His ferrari', 'Fiction', 7.00, 'yes', 'Robin Sharma', 'HaperSanFrancisco')"
 
 ```sql
 INSERT INTO books(isbn, book_title, category, rental_price, status, author, publisher)
-VALUES('978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.');
+VALUES('978-0-06251-567-4', 'The Monk Who Sold His ferrari', 'Fiction', 7.00, 'yes', 'Robin Sharma', 'HaperSanFrancisco.');
 SELECT * FROM books;
 ```
 **Task 2: Update an Existing Member's Address**
@@ -181,6 +201,9 @@ The following SQL queries were used to address specific questions:
 Task 7. **Retrieve All Books in a Specific Category**:
 
 ```sql
+SELECT * FROM books 
+WHERE category = 'Fiction';
+
 SELECT * FROM books
 WHERE category = 'Classic';
 ```
@@ -198,6 +221,7 @@ JOIN
 books as b
 ON b.isbn = ist.issued_book_isbn
 GROUP BY 1
+
 ```
 
 9. **List Members Who Registered in the Last 180 Days**:
@@ -278,22 +302,41 @@ Write a query to update the status of books in the books table to "Yes" when the
 
 ```sql
 
-CREATE OR REPLACE PROCEDURE add_return_records(p_return_id VARCHAR(10), p_issued_id VARCHAR(10), p_book_quality VARCHAR(10))
+SELECT * FROM issued_status
+WHERE isbn = '978-0-451-52994-2';
+
+SELECT * FROM books
+WHERE isbn = '978-0-451-52994-2';
+
+UPDATE books
+SET status = 'yes'
+WHERE isbn = '978-0-451-52994-2'
+
+SELECT * FROM return_status
+WHERE issued_id = 'IS130'
+
+----
+INSERT INTO return_status(return_id, issued_id, return_date, book_quality)
+   VALUES
+    ('RS125', 'IS130', CURRENT_DATE, 'Good');
+	SELECT * FROM return_status
+    WHERE issued_id = 'IS130'
+
+CREATE OR REPLACE PROCEDURE add_return_records(p_return_id VARCHAR(10), p_issued_id VARCHAR(15), p_book_quality VARCHAR(15))
 LANGUAGE plpgsql
 AS $$
 
 DECLARE
     v_isbn VARCHAR(50);
-    v_book_name VARCHAR(80);
-    
+    v_book_name VARCHAR(80);	
+
 BEGIN
     -- all your logic and code
     -- inserting into returns based on users input
     INSERT INTO return_status(return_id, issued_id, return_date, book_quality)
     VALUES
     (p_return_id, p_issued_id, CURRENT_DATE, p_book_quality);
-
-    SELECT 
+ SELECT 
         issued_book_isbn,
         issued_book_name
         INTO
@@ -306,13 +349,12 @@ BEGIN
     SET status = 'yes'
     WHERE isbn = v_isbn;
 
-    RAISE NOTICE 'Thank you for returning the book: %', v_book_name;
-    
+RAISE NOTICE 'Thank you for returning the book: %', v_book_name;	
+
 END;
 $$
 
-
--- Testing FUNCTION add_return_records
+Testing FUNCTION add_return_records
 
 issued_id = IS135
 ISBN = WHERE isbn = '978-0-307-58837-1'
@@ -332,9 +374,8 @@ CALL add_return_records('RS138', 'IS135', 'Good');
 -- calling function 
 CALL add_return_records('RS148', 'IS140', 'Good');
 
+
 ```
-
-
 
 
 **Task 15: Branch Performance Report**  
@@ -368,7 +409,7 @@ SELECT * FROM branch_reports;
 ```
 
 **Task 16: CTAS: Create a Table of Active Members**  
-Use the CREATE TABLE AS (CTAS) statement to create a new table active_members containing members who have issued at least one book in the last 2 months.
+Use the CREATE TABLE AS (CTAS) statement to create a new table active_members containing members who have issued at least one book in the last 45 months.
 
 ```sql
 
@@ -379,11 +420,9 @@ WHERE member_id IN (SELECT
                         DISTINCT issued_member_id   
                     FROM issued_status
                     WHERE 
-                        issued_date >= CURRENT_DATE - INTERVAL '2 month'
+                        issued_date >= CURRENT_DATE - INTERVAL '45 month'
                     )
 ;
-
-SELECT * FROM active_members;
 
 ```
 
@@ -409,6 +448,21 @@ GROUP BY 1, 2
 **Task 18: Identify Members Issuing High-Risk Books**  
 Write a query to identify members who have issued books more than twice with the status "damaged" in the books table. Display the member name, book title, and the number of times they've issued damaged books.    
 
+```sql
+SELECT
+      m.member_name,
+	  ist.issued_book_name,
+	  COUNT(ist.issued_book_isbn) AS damaged_books
+FROM issued_status ist
+JOIN members m
+   ON m.member_id = ist.issued_member_id
+JOIN return_status rs
+    ON rs.issued_id = ist.issued_id
+WHERE rs.book_quality = 'Damaged'
+GROUP BY m.member_name,ist.issued_book_name
+HAVING COUNT(ist.issued_book_isbn)>2;
+
+```
 
 **Task 19: Stored Procedure**
 Objective:
@@ -486,9 +540,24 @@ Description: Write a CTAS query to create a new table that lists each member and
     Member ID
     Number of overdue books
     Total fines
+```sql
+SELECT 
+      mem.member_id, mem.member_name,
+      COUNT(member_id) AS books_overdue, SUM((CURRENT_DATE - (iss.issued_date +INTERVAL '30 Days'):: DATE) * 0.50) AS total_fines
+FROM 
+      members AS mem
+JOIN issued_status AS iss
+ON iss.issued_member_id = mem.member_id
+LEFT JOIN return_status AS ret
+ON ret.issued_id = iss.issued_id
+JOIN books AS b
+ ON b.isbn = iss.issued_book_isbn
+WHERE 
+      return_date IS NULL
+      AND CURRENT_DATE - (iss.issued_date +INTERVAL '30 Days'):: DATE > 0
+GROUP BY 1,2
 
-
-
+```
 ## Reports
 
 - **Database Schema**: Detailed table structures and relationships.
@@ -499,24 +568,5 @@ Description: Write a CTAS query to create a new table that lists each member and
 
 This project demonstrates the application of SQL skills in creating and managing a library management system. It includes database setup, data manipulation, and advanced querying, providing a solid foundation for data management and analysis.
 
-## How to Use
+## Author - DAYFEED
 
-1. **Clone the Repository**: Clone this repository to your local machine.
-   ```sh
-   git clone https://github.com/najirh/Library-System-Management---P2.git
-   ```
-
-2. **Set Up the Database**: Execute the SQL scripts in the `database_setup.sql` file to create and populate the database.
-3. **Run the Queries**: Use the SQL queries in the `analysis_queries.sql` file to perform the analysis.
-4. **Explore and Modify**: Customize the queries as needed to explore different aspects of the data or answer additional questions.
-
-## Author - Zero Analyst
-
-This project showcases SQL skills essential for database management and analysis. For more content on SQL and data analysis, connect with me through the following channels:
-
-- **YouTube**: [Subscribe to my channel for tutorials and insights](https://www.youtube.com/@zero_analyst)
-- **Instagram**: [Follow me for daily tips and updates](https://www.instagram.com/zero_analyst/)
-- **LinkedIn**: [Connect with me professionally](https://www.linkedin.com/in/najirr)
-- **Discord**: [Join our community for learning and collaboration](https://discord.gg/36h5f2Z5PK)
-
-Thank you for your interest in this project!
