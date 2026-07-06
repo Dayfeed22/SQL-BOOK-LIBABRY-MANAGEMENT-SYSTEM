@@ -1,5 +1,5 @@
 # Library Management System using SQL Project --P2
-library_erd.png
+
 ## Project Overview
 
 **Project Title**: Library Management System    
