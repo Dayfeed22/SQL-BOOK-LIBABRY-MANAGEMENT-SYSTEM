@@ -1,4 +1,5 @@
 # Library Management System using SQL Project --P2
+<img width="1101" height="631" alt="library_erd" src="https://github.com/user-attachments/assets/e0db4c10-3a17-431f-8005-9bff84445725" />
 
 ## Project Overview
 
